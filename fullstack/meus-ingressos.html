@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Meus Ingressos | GoTicket</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="header-fixed">
+
+<header class="header">
+  <div class="header-content">
+
+    <h1 class="logo">GoTicket</h1>
+
+    <div class="right-icons">
+
+      <img
+        id="userIcon"
+        src="https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
+        alt="Usuário"
+      >
+
+      <img
+        src="https://img.icons8.com/?size=100&id=59997&format=png&color=000000"
+        alt="Carrinho"
+        onclick="irParaMeusIngressos()"
+      >
+
+      <img
+        src="https://img.icons8.com/?size=100&id=7695&format=png&color=000000"
+        alt="Buscar"
+        onclick="abrirBusca()"
+      >
+
+      <!-- BOTÃO HAMBÚRGUER (ÚLTIMO À DIREITA) -->
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    </div>
+
+  </div>
+
+  <!-- MENU ESCONDIDO -->
+  <nav class="navbar" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="index.html">Ingressos</a>
+    <a href="#">Sobre nós</a>
+    <a href="meus-ingressos.html">Meus ingressos</a>
+  </nav>
+  <!---->
+  <span id="userGreeting" style="display:none" onclick="abrirConta()">
+  Minha conta
+</span>
+<img id="userIcon" src="icone.png">
+</header>
+
+<main class="container">
+  <h2 class="section-title">Meus Ingressos</h2>
+
+  <div id="tickets" class="tickets-list">
+    <p>Carregando ingressos...</p>
+  </div>
+</main>
+
+<script src="script.js"></script>
+<script src="meus-ingressos.js"></script>
+</body>
+</html>
+

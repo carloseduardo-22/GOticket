@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- ESSENCIAL PARA MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>GoTicket</title>
+    <meta name="description" content="Garanta seu ingresso para aquela festa desejada">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="header-fixed">
+
+<!-- ================= MODAL ================= -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+
+    <button class="close" aria-label="Fechar modal">&times;</button>
+
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <h2>Entrar</h2>
+
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Senha">
+
+      <button onclick="login()">Entrar</button>
+
+      <p class="link" onclick="mostrarCadastro()">Criar conta</p>
+      <p class="link" onclick="pedirRecuperacao()">Esqueci minha senha</p>
+    </div>
+
+    <!-- CADASTRO -->
+    <div id="registerForm" style="display:none">
+      <h2>Criar conta</h2>
+
+      <input type="text" id="name" placeholder="Nome completo">
+      <input type="email" id="registerEmail" placeholder="Email">
+      <input type="password" id="password" placeholder="Senha">
+      <input type="password" id="registerPassword" placeholder="Confirmar senha">
+
+      <button onclick="cadastrar()">Cadastrar</button>
+
+      <p class="link" onclick="mostrarLogin()">Já tem conta? Entrar</p>
+    </div>
+
+    <!-- SUCESSO -->
+    <div id="registerSuccess" style="display:none">
+      <h2>🎉 Conta criada!</h2>
+      <p>Você já pode acessar sua conta.</p>
+
+      <button onclick="mostrarLogin()">Entrar agora</button>
+      <button onclick="logout()" class="logout-btn">Sair</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <div class="header-content">
+    <h1 class="logo">GoTicket</h1>
+
+    <div class="right-icons">
+      <div class="account-wrapper">
+        <img id="userIcon" 
+             src="https://img.icons8.com/?size=100&id=98957&format=png&color=000000" 
+             alt="Perfil" 
+             onclick="abrirModal()">
+
+        <span id="userGreeting" class="user-name" style="display: none;">Minha conta</span>
+
+        <div id="accountMenu" class="account-menu">
+          <a href="meus-ingressos.html">Meus ingressos</a>
+          <a href="#" onclick="logout()" style="color: #ff4d4d;">Sair</a>
+        </div>
+      </div>
+
+      <img src="https://img.icons8.com/?size=100&id=59997&format=png&color=000000" alt="Carrinho" onclick="irParaMeusIngressos()">
+      <img src="https://img.icons8.com/?size=100&id=7695&format=png&color=000000" alt="Buscar" onclick="abrirBusca()">
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    </div>
+  </div>
+
+  <nav class="navbar" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="meus-ingressos.html">Meus ingressos</a>
+  </nav>
+</header>
+<!-- BUSCA -->
+<div id="searchBox" class="search-box">
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Buscar evento..."
+    onkeydown="buscarEvento(event)">
+</div>
+
+<!-- ================= CONTEÚDO ================= -->
+<main class="container" id="eventos">
+  <h2 class="section-title">Eventos disponíveis</h2>
+
+  <div class="events">
+    <div class="event-card">
+      <div class="event-image">
+        <img src="./seu-evento.jpeg" alt="Seu evento">
+        <span class="event-location">Local</span>
+      </div>
+
+      <div class="event-content">
+        <h3>Seu evento</h3>
+        <p>Descrição</p>
+        <a href="evento.html" class="btn">Confira</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+

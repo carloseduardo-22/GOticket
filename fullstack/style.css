@@ -1,0 +1,443 @@
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f4f4f4;
+}
+
+/* ================= HEADER ================= */
+:root {
+  --cyber-lime: #39FF14;
+  --dark: #0b0b0b;
+}
+
+.header {
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--cyber-lime);
+  color: var(--dark);
+  border-bottom: 2px solid rgba(0,0,0,0.15);
+
+}
+.header-content,
+.header-content * {
+  pointer-events: auto;
+}
+
+
+.header-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.menu-toggle {
+  background: #000;
+  color: #39ff14;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 20px;
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #000;
+  margin-right: auto;
+}
+
+.navbar {
+  display: none;
+  position: absolute;
+  top: 60px;
+  right: 16px;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 180px;
+}
+
+.navbar a {
+  display: block;
+  padding: 12px;
+  color: #39ff14;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  background: rgba(57,255,20,0.15);
+}
+
+.navbar.show {
+  display: block;
+}
+
+.right-icons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.right-icons img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* Espaço para header fixo */
+body.header-fixed {
+  padding-top: 80px;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 90px 15px 20px;
+}
+
+/* ================= HOME / EVENTOS ================= */
+.events {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.event-card {
+  background: #fff;
+  width: 100%;
+  max-width: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.event-image img {
+  width: 100%;
+  display: block;
+}
+
+.event-location {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 5px 8px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+
+.event-content {
+  padding: 15px;
+  text-align: center;
+}
+
+.event-content h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.event-content p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.event-content .btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #000;
+  color: #39FF14;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* ================= EVENTO / COMPRA ================= */
+.ticket-container {
+  background: #fff;
+  width: 100%;
+  max-width: 360px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.ticket-container img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.event-title {
+  font-size: 26px;
+  margin-top: 15px;
+}
+
+.price,
+.total {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.quantity-control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-control button {
+  width: 40px;
+  height: 40px;
+  background: #000;
+  color: var(--cyber-lime);
+  border: none;
+  border-radius: 6px;
+  font-size: 20px;
+}
+
+/* ================= BOTÕES ================= */
+button {
+  width: 100%;
+  min-height: 44px;
+  background: #000;
+  color: var(--cyber-lime);
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ================= MODAL ================= */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+.modal.show {
+  display: flex;
+}
+.modal-content {
+  width: 90%;
+  max-width: 360px;
+  padding: 20px;
+  border-radius: 14px;
+}
+
+.modal-content h2 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: #000;
+  color: #39ff14;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content .link {
+  text-align: center;
+  margin-top: 10px;
+  color: #39ff14;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.close {
+
+  width: 100%;
+  min-height: 44px;
+  background: #000;
+  color: var(--cyber-lime);
+  border: none;
+  border-radius: 6px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+
+}
+
+/* ================= INGRESSOS ================= */
+.tickets-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.ticket-card {
+  background: #fff;
+  padding: 15px;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.ticket-card h3 {
+  color: #000;
+}
+
+/* ================= SEARCH ================= */
+.search-box {
+  display: none;
+  position: fixed;
+  top: 125px;
+  right: 10px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 260px;
+}
+.search-box input {
+  width: 200px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+/* ================= CONTA ================= */
+.account {
+  position: relative;
+}
+
+.account-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative; 
+    cursor: pointer;
+}
+
+.user-name {
+    font-weight: bold;
+    color: #000;
+    font-size: 14px;
+}
+
+.account-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #000;
+  min-width: 150px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 1002;
+  overflow: hidden;
+}
+
+.account-menu.show {
+    display: block;
+}
+
+.account-menu a {
+  display: block;
+  padding: 12px 16px;
+  color: #39FF14;
+  text-decoration: none;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.account-menu a:hover {
+  background: rgba(255,255,255,0.1);
+}
+.hidden {
+    display: none !important;
+}
+.account-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 101;
+}
+
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+
+  .header-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .navbar {
+    justify-content: center;
+  }
+  .search-box {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .search-box input {
+    width: 85vw;
+  }
+
+
+}
+#userGreeting {
+  position: relative;
+  z-index: 30;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
