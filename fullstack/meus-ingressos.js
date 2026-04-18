@@ -41,9 +41,7 @@ function exibirIngressosNaTela(ingressos) {
     ingressos.forEach(ticket => {
         const card = document.createElement("div");
         card.className = "ticket-card";
-
-        // Geramos um conteúdo único para o QR Code usando o ID do ingresso
-        // Exemplo: VALIDO-ID5-GOIAS
+        
         const conteudoQR = `VALIDO-ID${ticket.id}-${ticket.event.replace(/\s+/g, '')}`;
         
         const urlQRCode = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(conteudoQR)}`;

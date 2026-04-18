@@ -1,6 +1,4 @@
 // ================== CONFIGURAÇÃO DE REDE ==================
-// https://overmoist-indistinguishably-camille.ngrok-free.dev/index.html 
-// Se for apenas local, deixe "/"
 const API_BASE_URL = window.location.origin; 
 
 // ================== INICIALIZAÇÃO ==================

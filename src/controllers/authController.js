@@ -202,13 +202,13 @@ exports.criarPagamento = async (req, res) => {
         items: itensValidados
       },
       back_urls: {
-        success: "https://overmoist-indistinguishably-camille.ngrok-free.dev/pagamento/retorno.html",
-        failure: "https://overmoist-indistinguishably-camille.ngrok-free.dev/pagamento/retorno.html",
-        pending: "https://overmoist-indistinguishably-camille.ngrok-free.dev/pagamento/retorno.html"
+        success: "https://goticket-l2y9.onrender.com/pagamento/retorno.html",
+        failure: "https://goticket-l2y9.onrender.com/pagamento/retorno.html",
+        pending: "https://goticket-l2y9.onrender.com/pagamento/retorno.html"
       },
       auto_return: "approved",
       notification_url:
-        "https://overmoist-indistinguishably-camille.ngrok-free.dev/webhook/mercadopago"
+        "https://goticket-l2y9.onrender.com/webhook/mercadopago"
     };
 
     
