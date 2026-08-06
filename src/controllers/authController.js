@@ -229,4 +229,74 @@ exports.criarPagamento = async (req, res) => {
     res.status(500).json({ error: "Erro ao gerar pagamento" });
   }
 };
+// --- LISTAR TODOS OS EVENTOS (admin) ---
+exports.listarEventos = (req, res) => {
+  db.all("SELECT * FROM eventos ORDER BY id DESC", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: "Erro ao listar eventos" });
+    res.json(rows);
+  });
+};
 
+// --- CRIAR EVENTO ---
+exports.criarEvento = (req, res) => {
+  const { nome, descricao, local, data, imagem, preco_inteira, preco_meia, preco_camarote } = req.body;
+
+  if (!nome || !local || !data) {
+    return res.status(400).json({ error: "Nome, local e data são obrigatórios" });
+  }
+
+  db.run(
+    `INSERT INTO eventos (nome, descricao, local, data, imagem, preco_inteira, preco_meia, preco_camarote)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [nome, descricao, local, data, imagem, preco_inteira || 0, preco_meia || 0, preco_camarote || 0],
+    function(err) {
+      if (err) return res.status(500).json({ error: "Erro ao criar evento" });
+      res.status(201).json({ message: "Evento criado", id: this.lastID });
+    }
+  );
+};
+
+// --- EDITAR EVENTO ---
+exports.editarEvento = (req, res) => {
+  const { id } = req.params;
+  const { nome, descricao, local, data, imagem, preco_inteira, preco_meia, preco_camarote } = req.body;
+
+  db.run(
+    `UPDATE eventos SET nome=?, descricao=?, local=?, data=?, imagem=?, 
+     preco_inteira=?, preco_meia=?, preco_camarote=? WHERE id=?`,
+    [nome, descricao, local, data, imagem, preco_inteira, preco_meia, preco_camarote, id],
+    function(err) {
+      if (err) return res.status(500).json({ error: "Erro ao editar evento" });
+      if (this.changes === 0) return res.status(404).json({ error: "Evento não encontrado" });
+      res.json({ message: "Evento atualizado" });
+    }
+  );
+};
+
+// --- DELETAR EVENTO ---
+exports.deletarEvento = (req, res) => {
+  const { id } = req.params;
+
+  db.run("DELETE FROM eventos WHERE id = ?", [id], function(err) {
+    if (err) return res.status(500).json({ error: "Erro ao deletar evento" });
+    if (this.changes === 0) return res.status(404).json({ error: "Evento não encontrado" });
+    res.json({ message: "Evento deletado" });
+  });
+};
+// --- LISTAR EVENTOS (público) ---
+exports.listarEventosPublico = (req, res) => {
+  db.all("SELECT * FROM eventos ORDER BY id DESC", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: "Erro ao listar eventos" });
+    res.json(rows);
+  });
+};
+// --- BUSCAR UM EVENTO POR ID (público) ---
+exports.buscarEventoPorId = (req, res) => {
+  const { id } = req.params;
+
+  db.get("SELECT * FROM eventos WHERE id = ?", [id], (err, evento) => {
+    if (err) return res.status(500).json({ error: "Erro ao buscar evento" });
+    if (!evento) return res.status(404).json({ error: "Evento não encontrado" });
+    res.json(evento);
+  });
+};

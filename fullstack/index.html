@@ -2,8 +2,6 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-
-    <!-- ESSENCIAL PARA MOBILE -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
     <title>GoTicket</title>
@@ -49,7 +47,7 @@
 
     <!-- SUCESSO -->
     <div id="registerSuccess" style="display:none">
-      <h2>🎉 Conta criada!</h2>
+      <h2> Conta criada!</h2>
       <p>Você já pode acessar sua conta.</p>
 
       <button onclick="mostrarLogin()">Entrar agora</button>
@@ -67,7 +65,7 @@
     <div class="right-icons">
       <div class="account-wrapper">
         <img id="userIcon" 
-             src="https://img.icons8.com/?size=100&id=98957&format=png&color=000000" 
+             src="https://img.icons8.com/?size=100&id=98957&format=png&color=ffffff" 
              alt="Perfil" 
              onclick="abrirModal()">
 
@@ -79,8 +77,8 @@
         </div>
       </div>
 
-      <img src="https://img.icons8.com/?size=100&id=59997&format=png&color=000000" alt="Carrinho" onclick="irParaMeusIngressos()">
-      <img src="https://img.icons8.com/?size=100&id=7695&format=png&color=000000" alt="Buscar" onclick="abrirBusca()">
+      <img src="https://img.icons8.com/?size=100&id=59997&format=png&color=ffffff" alt="Carrinho" onclick="irParaMeusIngressos()">
+      <img id="searchIcon" src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff" alt="Buscar" onclick="abrirBusca()">
       <div class="menu-toggle" onclick="toggleMenu()">☰</div>
     </div>
   </div>
@@ -89,35 +87,97 @@
     <a href="index.html">Home</a>
     <a href="meus-ingressos.html">Meus ingressos</a>
   </nav>
+
+  <!-- BUSCA -->
+  <div id="searchBox" class="search-box">
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Buscar evento..."
+        onkeydown="buscarEvento(event)">
+      <button type="button" id="btnBuscar" class="search-btn" onclick="executarBusca()" aria-label="Pesquisar">
+        <img src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff" alt="">
+      </button>
+    </div>
+  </div>
 </header>
-<!-- BUSCA -->
-<div id="searchBox" class="search-box">
-  <input
-    type="text"
-    id="searchInput"
-    placeholder="Buscar evento..."
-    onkeydown="buscarEvento(event)">
-</div>
+
+<!-- ================= SLIDER DE DESTAQUES ================= -->
+<section class="banner-slider" id="bannerSlider">
+  <div class="banner-track" id="bannerTrack">
+    <!-- preenchido dinamicamente pelo script.js -->
+  </div>
+
+  <button class="banner-nav prev" onclick="mudarBanner(-1)" aria-label="Slide anterior">&#10094;</button>
+  <button class="banner-nav next" onclick="mudarBanner(1)" aria-label="Próximo slide">&#10095;</button>
+
+  <div class="banner-dots" id="bannerDots"></div>
+</section>
 
 <!-- ================= CONTEÚDO ================= -->
 <main class="container" id="eventos">
   <h2 class="section-title">Eventos disponíveis</h2>
-
-  <div class="events">
-    <div class="event-card">
-      <div class="event-image">
-        <img src="./seu-evento.jpeg" alt="Seu evento">
-        <span class="event-location">Local</span>
-      </div>
-
-      <div class="event-content">
-        <h3>Seu evento</h3>
-        <p>Descrição</p>
-        <a href="evento.html" class="btn">Confira</a>
-      </div>
-    </div>
+  <div class="events" id="listaEventosPublico">
+    <p style="color:#999; text-align:center;">Carregando eventos...</p>
   </div>
 </main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="footer-content">
+
+    <div class="footer-col footer-brand">
+      <h3 class="footer-logo">GoTicket</h3>
+      <p>Garanta seu ingresso para aquela festa desejada.</p>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+          <img src="https://img.icons8.com/?size=100&id=32323&format=png&color=ffffff" alt="Instagram">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Facebook">
+          <img src="https://img.icons8.com/?size=100&id=118497&format=png&color=ffffff" alt="Facebook">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=ffffff" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Institucional</h4>
+      <ul>
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Como funciona</a></li>
+        <li><a href="#">Termos de uso</a></li>
+        <li><a href="#">Política de privacidade</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Ajuda</h4>
+      <ul>
+        <li><a href="#">Central de ajuda</a></li>
+        <li><a href="#">Fale conosco</a></li>
+        <li><a href="meus-ingressos.html">Meus ingressos</a></li>
+        <li><a href="#">Trocas e reembolsos</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contato</h4>
+      <ul class="footer-contact">
+        <li>contato@goticket.com</li>
+        <li>(00) 00000-0000</li>
+        <li>Goiânia, GO - Brasil</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <span id="footerYear"></span> GoTicket. Todos os direitos reservados.</p>
+  </div>
+</footer>
 
 <script src="script.js"></script>
 </body>

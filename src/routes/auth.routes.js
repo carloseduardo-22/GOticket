@@ -3,10 +3,19 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const authController = require("../controllers/authController");
 const autenticarToken = require("../middlewares/authMiddleware");
+const { autenticarAdmin } = require("../middlewares/authMiddleware");
 
 router.post("/forgot-password", authController.forgotPassword);
 router.post("/reset-password", authController.resetPassword);
 router.post('/pagar', autenticarToken, authController.criarPagamento);
+router.get('/eventos', authController.listarEventosPublico);
+router.get('/eventos/:id', authController.buscarEventoPorId);
+
+// ================= ADMIN - EVENTOS =================
+router.get('/admin/eventos',            autenticarToken, autenticarAdmin, authController.listarEventos);
+router.post('/admin/eventos',           autenticarToken, autenticarAdmin, authController.criarEvento);
+router.put('/admin/eventos/:id',        autenticarToken, autenticarAdmin, authController.editarEvento);
+router.delete('/admin/eventos/:id',     autenticarToken, autenticarAdmin, authController.deletarEvento);
 
 // ================= REGISTRO =================
 router.post(

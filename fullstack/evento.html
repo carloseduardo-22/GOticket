@@ -63,7 +63,7 @@
     <div class="right-icons">
       <div class="account-wrapper">
         <img id="userIcon" 
-             src="https://img.icons8.com/?size=100&id=98957&format=png&color=000000" 
+             src="https://img.icons8.com/?size=100&id=98957&format=png&color=ffffff" 
              alt="Entrar" 
              onclick="abrirModal()">
 
@@ -75,8 +75,8 @@
         </div>
       </div>
 
-      <img src="https://img.icons8.com/?size=100&id=59997&format=png&color=000000" alt="Ingressos" onclick="irParaMeusIngressos()">
-      <img src="https://img.icons8.com/?size=100&id=7695&format=png&color=000000" alt="Buscar" onclick="abrirBusca()">
+      <img src="https://img.icons8.com/?size=100&id=59997&format=png&color=ffffff" alt="Ingressos" onclick="irParaMeusIngressos()">
+      <img id="searchIcon" src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff" alt="Buscar" onclick="abrirBusca()">
 
       <div class="menu-toggle" onclick="toggleMenu()">☰</div>
     </div>
@@ -88,21 +88,35 @@
     <a href="#">Sobre nós</a>
     <a href="meus-ingressos.html">Meus ingressos</a>
   </nav>
+
+  <!-- BUSCA -->
+  <div id="searchBox" class="search-box">
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Buscar evento..."
+        onkeydown="buscarEvento(event)">
+      <button type="button" id="btnBuscar" class="search-btn" onclick="executarBusca()" aria-label="Pesquisar">
+        <img src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff" alt="">
+      </button>
+    </div>
+  </div>
 </header>
 
 
 <!-- ================= CONTEÚDO ================= -->
 <main class="ticket-container">
-  <img src="./seu-evento.jpeg" alt="seu evento" class="event-image">
+  <img src="./seu-evento.jpeg" alt="seu evento" class="event-image" id="eventoImagem">
 
-  <h1 class="event-title">Nome e informações do evento aqui</h1>
-  <p class="event-location">Local</p>
+  <h1 class="event-title" id="eventoNome">Nome e informações do evento aqui</h1>
+  <p class="event-location" id="eventoLocal">Local</p>
 
   <div class="ticket-options">
 
   <div class="ticket-type">
     <span>Inteira</span>
-    <span>R$ 50,00</span>
+    <span id="precoInteira">R$ 50</span>
     <div class="quantity-control">
       <button onclick="alterarQuantidade('inteira', -1)">−</button>
       <span id="qtd-inteira">0</span>
@@ -112,7 +126,7 @@
 
   <div class="ticket-type">
     <span>Meia-entrada</span>
-    <span>R$ 25,00</span>
+    <span id="precoMeia">R$ 25</span>
     <div class="quantity-control">
       <button onclick="alterarQuantidade('meia', -1)">−</button>
       <span id="qtd-meia">0</span>
@@ -122,7 +136,7 @@
 
   <div class="ticket-type">
     <span>Camarote</span>
-    <span>R$ 100,00</span>
+    <span id="precoCamarote">R$ 100</span>
     <div class="quantity-control">
       <button onclick="alterarQuantidade('camarote', -1)">−</button>
       <span id="qtd-camarote">0</span>
@@ -145,13 +159,61 @@
   <p id="message"></p>
 </main>
 
-<div id="searchBox" class="search-box">
-  <input
-    type="text"
-    id="searchInput"
-    placeholder="Buscar evento..."
-    onkeydown="buscarEvento(event)">
-</div>
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="footer-content">
+
+    <div class="footer-col footer-brand">
+      <h3 class="footer-logo">GoTicket</h3>
+      <p>Garanta seu ingresso para aquela festa desejada.</p>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+          <img src="https://img.icons8.com/?size=100&id=32323&format=png&color=ffffff" alt="Instagram">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Facebook">
+          <img src="https://img.icons8.com/?size=100&id=118497&format=png&color=ffffff" alt="Facebook">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=ffffff" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Institucional</h4>
+      <ul>
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Como funciona</a></li>
+        <li><a href="#">Termos de uso</a></li>
+        <li><a href="#">Política de privacidade</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Ajuda</h4>
+      <ul>
+        <li><a href="#">Central de ajuda</a></li>
+        <li><a href="#">Fale conosco</a></li>
+        <li><a href="meus-ingressos.html">Meus ingressos</a></li>
+        <li><a href="#">Trocas e reembolsos</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contato</h4>
+      <ul class="footer-contact">
+        <li>contato@goticket.com</li>
+        <li>(00) 00000-0000</li>
+        <li>Goiânia, GO - Brasil</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <span id="footerYear"></span> GoTicket. Todos os direitos reservados.</p>
+  </div>
+</footer>
 
 <script src="script.js"></script>
 <script src="https://sdk.mercadopago.com/js/v2"></script>

@@ -5,10 +5,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function carregarMeusIngressos() {
   const token = localStorage.getItem("token");
+  const container = document.getElementById("tickets");
 
   if (!token) {
-    alert("Você precisa estar logado");
-    window.location.href = "index.html";
+    if (container) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:40px 20px;">
+          <p style="color:#999; margin-bottom:16px;">Faça login para ver seus ingressos</p>
+          <button onclick="abrirModal()" class="btn">Entrar</button>
+        </div>
+      `;
+    }
     return;
   }
 
@@ -20,6 +27,18 @@ async function carregarMeusIngressos() {
       }
     });
 
+    if (response.status === 401) {
+      if (container) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:40px 20px;">
+            <p style="color:#999; margin-bottom:16px;">Faça login para ver seus ingressos</p>
+            <button onclick="abrirModal()" class="btn">Entrar</button>
+          </div>
+        `;
+      }
+      return;
+    }
+
     if (!response.ok) {
       throw new Error("Erro ao buscar ingressos");
     }
@@ -29,7 +48,9 @@ async function carregarMeusIngressos() {
 
   } catch (err) {
     console.error(err);
-    alert("Erro ao carregar ingressos");
+    if (container) {
+      container.innerHTML = '<p style="color:#999;text-align:center;">Erro ao carregar ingressos.</p>';
+    }
   }
 }
 

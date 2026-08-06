@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const db  = require("../database/db");
 
-module.exports = (req, res, next) => {
+const autenticarToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -16,10 +17,20 @@ module.exports = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, "supersecreta123");
     req.userId = decoded.id;
-    console.log("Token decodificado com sucesso! UserID:", req.userId); // Log de teste
     next();
   } catch (err) {
     return res.status(401).json({ error: "Token inválido ou expirado" });
   }
 };
-console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
+const autenticarAdmin = (req, res, next) => {
+  db.get("SELECT role FROM users WHERE id = ?", [req.userId], (err, user) => {
+    if (err || !user || user.role !== "admin") {
+      return res.status(403).json({ error: "Acesso restrito a administradores" });
+    }
+    next();
+  });
+};
+
+module.exports = autenticarToken;
+module.exports.autenticarAdmin = autenticarAdmin;

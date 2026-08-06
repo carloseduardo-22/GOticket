@@ -48,6 +48,9 @@ db.run("ALTER TABLE tickets ADD COLUMN quantity INTEGER DEFAULT 1", (err) => {
     });
 
 });
+db.run("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'", (err) => {
+    if (err) console.log("Coluna role já existe.");
+});
 
 module.exports = db;
 

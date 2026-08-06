@@ -7,12 +7,12 @@
 }
 
 body {
-  background: #f4f4f4;
+  background: #F3F1EA;
 }
 
 /* ================= HEADER ================= */
 :root {
-  --cyber-lime: #39FF14;
+  --bg-dark-2: #1C1F28;
   --dark: #0b0b0b;
 }
 
@@ -24,7 +24,7 @@ body {
   left: 0;
   right: 0;
   z-index: 100;
-  background: var(--cyber-lime);
+  background: var(--bg-dark-2);
   color: var(--dark);
   border-bottom: 2px solid rgba(0,0,0,0.15);
 
@@ -43,7 +43,7 @@ body {
 
 .menu-toggle {
   background: #000;
-  color: #39ff14;
+  color: #fff;
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 20px;
@@ -55,7 +55,7 @@ body {
 .logo {
   font-size: 22px;
   font-weight: bold;
-  color: #000;
+  color: #fff;
   margin-right: auto;
 }
 
@@ -64,7 +64,7 @@ body {
   position: absolute;
   top: 60px;
   right: 16px;
-  background: #000;
+  background: #fff;
   border-radius: 8px;
   overflow: hidden;
   min-width: 180px;
@@ -73,7 +73,7 @@ body {
 .navbar a {
   display: block;
   padding: 12px;
-  color: #39ff14;
+  color: #1C1F28;
   text-decoration: none;
 }
 
@@ -99,7 +99,94 @@ body {
 
 /* Espaço para header fixo */
 body.header-fixed {
-  padding-top: 80px;
+  padding-top: 128px;
+}
+
+/* SLIDER DE BANNER               */
+
+.banner-slider {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  max-height: 50vh;
+  overflow: hidden;
+  touch-action: pan-y;
+  background-color: #f4f1ea; /* troque pela cor de fundo real do seu site */
+}
+
+.banner-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  background-size: contain;       /* mostra a imagem inteira, sem cortar */
+  background-position: center;
+  background-repeat: no-repeat;   /* evita repetir a imagem nas bordas */
+  background-color: #f4f1ea;      /* mesma cor, garante o preenchimento por slide */
+  display: block;
+}
+
+.banner-track {
+  display: flex;
+  height: 100%;
+}
+
+
+.banner-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.banner-nav:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.banner-nav.prev { left: 12px; }
+.banner-nav.next { right: 12px; }
+
+.banner-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+.banner-dots .dot {
+  width: 9px;
+  height: 9px;
+  min-height: 0;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0;
+}
+
+.banner-dots .dot.active {
+  background: #fff;
+}
+
+@media (max-width: 600px) {
+  .banner-slider {
+    height: 220px;
+    max-height: 40vh;
+  }
 }
 
 /* ================= CONTAINER ================= */
@@ -161,8 +248,8 @@ body.header-fixed {
 .event-content .btn {
   display: inline-block;
   padding: 8px 16px;
-  background: #000;
-  color: #39FF14;
+  background: #f2390b;
+  color: #fff;
   border-radius: 6px;
   text-decoration: none;
   font-weight: bold;
@@ -206,7 +293,7 @@ body.header-fixed {
 .quantity-control button {
   width: 40px;
   height: 40px;
-  background: #000;
+  background: #fff;
   color: var(--cyber-lime);
   border: none;
   border-radius: 6px;
@@ -217,8 +304,8 @@ body.header-fixed {
 button {
   width: 100%;
   min-height: 44px;
-  background: #000;
-  color: var(--cyber-lime);
+  background: #f2390b;
+  color: #fff;
   border: none;
   border-radius: 6px;
   font-size: 16px;
@@ -264,7 +351,7 @@ button {
   padding: 12px;
   border-radius: 10px;
   background: #000;
-  color: #39ff14;
+  color: #fff;
   font-weight: bold;
   border: none;
   cursor: pointer;
@@ -273,7 +360,7 @@ button {
 .modal-content .link {
   text-align: center;
   margin-top: 10px;
-  color: #39ff14;
+  color: #fff;
   cursor: pointer;
   font-size: 14px;
 }
@@ -313,25 +400,63 @@ button {
   color: #000;
 }
 
-/* ================= SEARCH ================= */
+/* ================= SEARCH (estilo YouTube) ================= */
 .search-box {
-  display: none;
-  position: fixed;
-  top: 125px;
-  right: 10px;
-  background: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  width: 90%;
-  max-width: 260px;
+  display: block;
+  width: 100%;
+  padding: 0 16px 10px;
+  margin-top: -4px;
+  background: var(--bg-dark-2);
 }
-.search-box input {
-  width: 200px;
-  padding: 8px 10px;
-  border-radius: 5px;
+
+.search-bar {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.search-bar input {
+  flex: 1;
+  min-width: 0;
   border: none;
   outline: none;
+  padding: 10px 16px;
+  font-size: 15px;
+  background: transparent;
+  color: #1C1F28;
+}
+
+.search-btn {
+  width: 48px;
+  min-height: 0;
+  height: auto;
+  flex: 0 0 48px;
+  border: none;
+  border-left: 1px solid #e3e3e3;
+  background: #f6f6f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 0;
+}
+
+.search-btn:hover {
+  background: #ececec;
+}
+
+.search-btn img {
+  width: 18px;
+  height: 18px;
+  filter: invert(0.35);
 }
 
 /* ================= CONTA ================= */
@@ -373,7 +498,7 @@ button {
 .account-menu a {
   display: block;
   padding: 12px 16px;
-  color: #39FF14;
+  color: #fff;
   text-decoration: none;
   font-size: 14px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -404,15 +529,10 @@ button {
   .navbar {
     justify-content: center;
   }
-  .search-box {
-    right: 50%;
-    transform: translateX(50%);
-  }
 
-  .search-box input {
-    width: 85vw;
+  body.header-fixed {
+    padding-top: 172px;
   }
-
 
 }
 #userGreeting {
@@ -421,7 +541,103 @@ button {
   cursor: pointer;
   pointer-events: auto;
 }
+/* ================= FOOTER ================= */
+.site-footer {
+  background: #1a1a1a;
+  color: #d1d1d1;
+  margin-top: 60px;
+  padding-top: 40px;
+  font-size: 14px;
+}
 
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+  justify-content: space-between;
+}
+
+.footer-col {
+  flex: 1 1 200px;
+  min-width: 160px;
+}
+
+.footer-brand {
+  flex: 1 1 260px;
+}
+
+.footer-logo {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.footer-col h4 {
+  color: #fff;
+  font-size: 15px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 10px;
+}
+
+.footer-col a {
+  color: #d1d1d1;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-col a:hover {
+  color: #fff;
+}
+
+.footer-contact li {
+  color: #d1d1d1;
+}
+
+.footer-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.footer-social img {
+  width: 22px;
+  height: 22px;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.footer-social img:hover {
+  opacity: 1;
+}
+
+.footer-bottom {
+  border-top: 1px solid #333;
+  text-align: center;
+  padding: 16px 24px;
+  font-size: 13px;
+  color: #888;
+}
+
+@media (max-width: 600px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
 
 
 

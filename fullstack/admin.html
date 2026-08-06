@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | GoTicket</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #f3f1ea; min-height: 100vh; }
+
+    .topbar {
+      background: #1C1F28;
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .topbar h1 { font-size: 18px; }
+    .topbar button {
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      width: auto;
+      min-height: unset;
+    }
+
+    .container { max-width: 860px; margin: 32px auto; padding: 0 16px; }
+
+    /* FORMULÁRIO */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 32px;
+    }
+    .card h2 { margin-bottom: 20px; font-size: 18px; color: #1C1F28; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-grid .full { grid-column: 1 / -1; }
+
+    .form-grid input,
+    .form-grid textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-grid input:focus,
+    .form-grid textarea:focus { border-color: #1C1F28; }
+    .form-grid textarea { resize: vertical; min-height: 72px; }
+
+    .form-actions { margin-top: 16px; display: flex; gap: 10px; }
+    .btn-salvar {
+      background: #1C1F28;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      width: auto;
+      min-height: unset;
+    }
+    .btn-cancelar {
+      background: #eee;
+      color: #333;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      width: auto;
+      min-height: unset;
+      display: none;
+    }
+
+    #mensagem {
+      margin-top: 12px;
+      font-size: 14px;
+      color: green;
+      min-height: 20px;
+    }
+    #mensagem.erro { color: #ff4d4d; }
+
+    /* LISTA DE EVENTOS */
+    .eventos-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .eventos-header h2 { font-size: 18px; color: #1C1F28; }
+
+    .evento-item {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 10px;
+    }
+    .evento-info h3 { font-size: 15px; color: #1C1F28; margin-bottom: 4px; }
+    .evento-info p { font-size: 13px; color: #777; }
+
+    .evento-acoes { display: flex; gap: 8px; }
+    .btn-editar {
+      background: #f2390b;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      width: auto;
+      min-height: unset;
+    }
+    .btn-deletar {
+      background: #eee;
+      color: #333;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      width: auto;
+      min-height: unset;
+    }
+    .btn-deletar:hover { background: #ff4d4d; color: #fff; }
+
+    #listaEventos p { color: #999; font-size: 14px; text-align: center; padding: 20px; }
+
+    #loginBox {
+      max-width: 360px;
+      margin: 80px auto;
+      background: #fff;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    #loginBox h2 { margin-bottom: 20px; }
+    #loginBox input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    #loginBox button {
+      width: 100%;
+      padding: 12px;
+      background: #1C1F28;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      min-height: unset;
+    }
+    #loginBox p { color: #ff4d4d; font-size: 13px; margin-top: 10px; min-height: 18px; }
+
+    #painelAdmin { display: none; }
+
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .full { grid-column: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginBox">
+  <h2>Admin GoTicket</h2>
+  <input type="email" id="adminEmail" placeholder="Email">
+  <input type="password" id="adminSenha" placeholder="Senha">
+  <button onclick="fazerLogin()">Entrar</button>
+  <p id="loginErro"></p>
+</div>
+
+<!-- PAINEL -->
+<div id="painelAdmin">
+  <div class="topbar">
+    <h1>GoTicket — Painel Admin</h1>
+    <button onclick="sairAdmin()">Sair</button>
+  </div>
+
+  <div class="container">
+
+    <!-- FORMULÁRIO -->
+    <div class="card">
+      <h2 id="formTitulo">Novo evento</h2>
+      <input type="hidden" id="eventoId">
+
+      <div class="form-grid">
+        <input class="full" type="text"   id="fNome"      placeholder="Nome do evento *">
+        <input class="full" type="text"   id="fImagem"    placeholder="Caminho da imagem (ex: ./banner1.jpeg)">
+        <input             type="text"   id="fLocal"     placeholder="Local *">
+        <input             type="date"   id="fData">
+        <textarea class="full"           id="fDescricao" placeholder="Descrição"></textarea>
+        <input             type="number" id="fInteira"   placeholder="Preço inteira (R$)" step="0.01">
+        <input             type="number" id="fMeia"      placeholder="Preço meia (R$)"    step="0.01">
+        <input             type="number" id="fCamarote"  placeholder="Preço camarote (R$)" step="0.01">
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-salvar"   onclick="salvarEvento()">Salvar evento</button>
+        <button class="btn-cancelar" id="btnCancelar" onclick="cancelarEdicao()">Cancelar</button>
+      </div>
+      <p id="mensagem"></p>
+    </div>
+
+    <!-- LISTA -->
+    <div class="eventos-header">
+      <h2>Eventos cadastrados</h2>
+    </div>
+    <div id="listaEventos">
+      <p>Carregando...</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API = window.location.origin;
+  let token = null;
+
+  // ======= LOGIN =======
+  async function fazerLogin() {
+    const email = document.getElementById('adminEmail').value.trim();
+    const senha = document.getElementById('adminSenha').value;
+    const erro  = document.getElementById('loginErro');
+
+    try {
+      const res  = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: senha })
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Erro ao logar');
+
+      // Verifica se é admin
+      const perfil = await fetch(`${API}/auth/admin/eventos`, {
+        headers: { Authorization: `Bearer ${data.token}` }
+      });
+
+      if (perfil.status === 403) {
+        erro.textContent = 'Você não tem permissão de administrador.';
+        return;
+      }
+
+      token = data.token;
+      document.getElementById('loginBox').style.display    = 'none';
+      document.getElementById('painelAdmin').style.display = 'block';
+      carregarEventos();
+
+    } catch (err) {
+      erro.textContent = err.message;
+    }
+  }
+
+  function sairAdmin() {
+    token = null;
+    document.getElementById('loginBox').style.display    = 'block';
+    document.getElementById('painelAdmin').style.display = 'none';
+    document.getElementById('adminEmail').value = '';
+    document.getElementById('adminSenha').value = '';
+  }
+
+  // ======= LISTAR =======
+  async function carregarEventos() {
+    const lista = document.getElementById('listaEventos');
+    try {
+      const res    = await fetch(`${API}/auth/admin/eventos`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const eventos = await res.json();
+
+      if (!eventos.length) {
+        lista.innerHTML = '<p>Nenhum evento cadastrado ainda.</p>';
+        return;
+      }
+
+      lista.innerHTML = eventos.map(ev => `
+        <div class="evento-item">
+          <div class="evento-info">
+            <h3>${ev.nome}</h3>
+            <p>${ev.local} · ${ev.data ? ev.data : 'sem data'}</p>
+            <p>Inteira: R$ ${Number(ev.preco_inteira).toFixed(2)} · Meia: R$ ${Number(ev.preco_meia).toFixed(2)} · Camarote: R$ ${Number(ev.preco_camarote).toFixed(2)}</p>
+          </div>
+          <div class="evento-acoes">
+            <button class="btn-editar"  onclick='preencherEdicao(${JSON.stringify(ev)})'>Editar</button>
+            <button class="btn-deletar" onclick="deletarEvento(${ev.id}, '${ev.nome.replace(/'/g, "\\'")}')">Deletar</button>
+          </div>
+        </div>
+      `).join('');
+
+    } catch (err) {
+      lista.innerHTML = '<p>Erro ao carregar eventos.</p>';
+    }
+  }
+
+  // ======= SALVAR (criar ou editar) =======
+  async function salvarEvento() {
+    const id  = document.getElementById('eventoId').value;
+    const msg = document.getElementById('mensagem');
+
+    const body = {
+      nome:           document.getElementById('fNome').value.trim(),
+      local:          document.getElementById('fLocal').value.trim(),
+      data:           document.getElementById('fData').value,
+      imagem:         document.getElementById('fImagem').value.trim(),
+      descricao:      document.getElementById('fDescricao').value.trim(),
+      preco_inteira:  parseFloat(document.getElementById('fInteira').value)  || 0,
+      preco_meia:     parseFloat(document.getElementById('fMeia').value)     || 0,
+      preco_camarote: parseFloat(document.getElementById('fCamarote').value) || 0,
+    };
+
+    if (!body.nome || !body.local) {
+      msg.className = 'erro';
+      msg.textContent = 'Nome e local são obrigatórios.';
+      return;
+    }
+
+    try {
+      const url    = id ? `${API}/auth/admin/eventos/${id}` : `${API}/auth/admin/eventos`;
+      const method = id ? 'PUT' : 'POST';
+
+      const res  = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error);
+
+      msg.className   = '';
+      msg.textContent = id ? 'Evento atualizado!' : `Evento criado! ID: ${data.id}`;
+      limparFormulario();
+      carregarEventos();
+
+    } catch (err) {
+      msg.className   = 'erro';
+      msg.textContent = err.message;
+    }
+  }
+
+  // ======= EDITAR =======
+  function preencherEdicao(ev) {
+    document.getElementById('eventoId').value  = ev.id;
+    document.getElementById('fNome').value     = ev.nome;
+    document.getElementById('fLocal').value    = ev.local;
+    document.getElementById('fData').value     = ev.data || '';
+    document.getElementById('fImagem').value   = ev.imagem || '';
+    document.getElementById('fDescricao').value = ev.descricao || '';
+    document.getElementById('fInteira').value  = ev.preco_inteira;
+    document.getElementById('fMeia').value     = ev.preco_meia;
+    document.getElementById('fCamarote').value = ev.preco_camarote;
+
+    document.getElementById('formTitulo').textContent    = 'Editar evento';
+    document.getElementById('btnCancelar').style.display = 'inline-block';
+    document.getElementById('mensagem').textContent      = '';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelarEdicao() {
+    limparFormulario();
+  }
+
+  function limparFormulario() {
+    ['eventoId','fNome','fLocal','fData','fImagem','fDescricao','fInteira','fMeia','fCamarote']
+      .forEach(id => document.getElementById(id).value = '');
+    document.getElementById('formTitulo').textContent    = 'Novo evento';
+    document.getElementById('btnCancelar').style.display = 'none';
+    document.getElementById('mensagem').textContent      = '';
+  }
+
+  // ======= DELETAR =======
+  async function deletarEvento(id, nome) {
+    if (!confirm(`Deletar "${nome}"? Essa ação não pode ser desfeita.`)) return;
+
+    try {
+      const res = await fetch(`${API}/auth/admin/eventos/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      carregarEventos();
+    } catch (err) {
+      alert('Erro ao deletar: ' + err.message);
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -12,49 +12,82 @@
 
 <body class="header-fixed">
 
-<header class="header">
-  <div class="header-content">
+<!-- ================= MODAL ================= -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
 
-    <h1 class="logo">GoTicket</h1>
+    <button class="close" aria-label="Fechar modal">&times;</button>
 
-    <div class="right-icons">
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <h2>Entrar</h2>
 
-      <img
-        id="userIcon"
-        src="https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
-        alt="Usuário"
-      >
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Senha">
 
-      <img
-        src="https://img.icons8.com/?size=100&id=59997&format=png&color=000000"
-        alt="Carrinho"
-        onclick="irParaMeusIngressos()"
-      >
+      <button onclick="login()">Entrar</button>
 
-      <img
-        src="https://img.icons8.com/?size=100&id=7695&format=png&color=000000"
-        alt="Buscar"
-        onclick="abrirBusca()"
-      >
+      <p class="link" onclick="mostrarCadastro()">Criar conta</p>
+      <p class="link" onclick="pedirRecuperacao()">Esqueci minha senha</p>
+    </div>
 
-      <!-- BOTÃO HAMBÚRGUER (ÚLTIMO À DIREITA) -->
-      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <!-- CADASTRO -->
+    <div id="registerForm" style="display:none">
+      <h2>Criar conta</h2>
+
+      <input type="text" id="name" placeholder="Nome completo">
+      <input type="email" id="registerEmail" placeholder="Email">
+      <input type="password" id="password" placeholder="Senha">
+      <input type="password" id="registerPassword" placeholder="Confirmar senha">
+
+      <button onclick="cadastrar()">Cadastrar</button>
+
+      <p class="link" onclick="mostrarLogin()">Já tem conta? Entrar</p>
+    </div>
+
+    <!-- SUCESSO -->
+    <div id="registerSuccess" style="display:none">
+      <h2> Conta criada!</h2>
+      <p>Você já pode acessar sua conta.</p>
+
+      <button onclick="mostrarLogin()">Entrar agora</button>
+      <button onclick="logout()" class="logout-btn">Sair</button>
     </div>
 
   </div>
+</div>
 
-  <!-- MENU ESCONDIDO -->
+<header class="header">
+  <div class="header-content">
+    <h1 class="logo">GoTicket</h1>
+
+    <div class="right-icons">
+      <div class="account-wrapper">
+        <img id="userIcon" 
+             src="https://img.icons8.com/?size=100&id=98957&format=png&color=ffffff" 
+             alt="Perfil" 
+             onclick="abrirModal()">
+
+        <span id="userGreeting" class="user-name" style="display: none;">Minha conta</span>
+
+        <div id="accountMenu" class="account-menu">
+          <a href="meus-ingressos.html">Meus ingressos</a>
+          <a href="#" onclick="logout()" style="color: #ff4d4d;">Sair</a>
+        </div>
+      </div>
+
+      <img src="https://img.icons8.com/?size=100&id=59997&format=png&color=ffffff" alt="Carrinho" onclick="irParaMeusIngressos()">
+      <img src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff" alt="Buscar" onclick="abrirBusca()">
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    </div>
+  </div>
+
   <nav class="navbar" id="mobileMenu">
     <a href="index.html">Home</a>
     <a href="index.html">Ingressos</a>
     <a href="#">Sobre nós</a>
     <a href="meus-ingressos.html">Meus ingressos</a>
   </nav>
-  <!---->
-  <span id="userGreeting" style="display:none" onclick="abrirConta()">
-  Minha conta
-</span>
-<img id="userIcon" src="icone.png">
 </header>
 
 <main class="container">
@@ -64,6 +97,62 @@
     <p>Carregando ingressos...</p>
   </div>
 </main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="footer-content">
+
+    <div class="footer-col footer-brand">
+      <h3 class="footer-logo">GoTicket</h3>
+      <p>Garanta seu ingresso para aquela festa desejada.</p>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+          <img src="https://img.icons8.com/?size=100&id=32323&format=png&color=ffffff" alt="Instagram">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Facebook">
+          <img src="https://img.icons8.com/?size=100&id=118497&format=png&color=ffffff" alt="Facebook">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=ffffff" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Institucional</h4>
+      <ul>
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Como funciona</a></li>
+        <li><a href="#">Termos de uso</a></li>
+        <li><a href="#">Política de privacidade</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Ajuda</h4>
+      <ul>
+        <li><a href="#">Central de ajuda</a></li>
+        <li><a href="#">Fale conosco</a></li>
+        <li><a href="meus-ingressos.html">Meus ingressos</a></li>
+        <li><a href="#">Trocas e reembolsos</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contato</h4>
+      <ul class="footer-contact">
+        <li>contato@goticket.com</li>
+        <li>(00) 00000-0000</li>
+        <li>Goiânia, GO - Brasil</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <span id="footerYear"></span> GoTicket. Todos os direitos reservados.</p>
+  </div>
+</footer>
 
 <script src="script.js"></script>
 <script src="meus-ingressos.js"></script>
