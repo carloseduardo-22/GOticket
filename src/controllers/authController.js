@@ -1,226 +1,212 @@
 const db = require("../database/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
-const { MercadoPagoConfig, Preference } = require('mercadopago');
-const client = new MercadoPagoConfig({ accessToken: 'TEST-1783477078293568-012018-884ac3828e5779c6e0f69ec06de45b42-2487509162' });
+const crypto = require("crypto");
+const { preference } = require("../config/mercadopago");
+const { JWT_SECRET, BASE_URL } = require("../config/env");
+const { VERSAO_TERMOS } = require("../config/legal");
 
-// --- FUNÇÃO DE REGISTRO ---
+// Tipos de ingresso aceitos e a coluna de preço de cada um na tabela eventos
+const TIPOS_INGRESSO = {
+  inteira:  { titulo: "Inteira",      coluna: "preco_inteira" },
+  meia:     { titulo: "Meia-entrada", coluna: "preco_meia" },
+  camarote: { titulo: "Camarote",     coluna: "preco_camarote" }
+};
+const MAX_POR_TIPO = 10;
+
+const ERRO_CREDENCIAIS = "E-mail ou senha incorretos.";
+// Hash usado quando o e-mail não existe, para o tempo de resposta ser o mesmo
+// e não dar pistas de quais e-mails têm conta
+const HASH_FALSO = bcrypt.hashSync("senha-inexistente", 10);
+
+const gerarSessao = (user) => ({
+  token: jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1d" }),
+  user: { id: user.id, name: user.name, email: user.email }
+});
+
+// O token de recuperação é guardado só como hash: quem ler o banco não consegue usá-lo
+const hashToken = (token) => crypto.createHash("sha256").update(token).digest("hex");
+
+// --- CADASTRO ---
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: "Todos os campos (name, email, password) são obrigatórios" });
-  }
-
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const sql = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
+    const { lastID } = await db.runAsync(
+      `INSERT INTO users (name, email, password, created_at, consent_at, consent_version)
+       VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)`,
+      [name, email, hashedPassword, VERSAO_TERMOS]
+    );
 
-    db.run(sql, [name, email, hashedPassword], function (err) {
-      if (err) {
-        return res.status(400).json({ error: "Email já cadastrado" });
-      }
-      res.status(201).json({
-        message: "Usuário criado com sucesso",
-        id: this.lastID
-      });
+    res.status(201).json({
+      message: "Conta criada com sucesso",
+      ...gerarSessao({ id: lastID, name, email })
     });
-  } catch (error) {
-    res.status(500).json({ error: "Erro ao processar senha" });
+  } catch (err) {
+    if (err.code === "SQLITE_CONSTRAINT") {
+      return res.status(409).json({ error: "Já existe uma conta com este e-mail." });
+    }
+    console.error("Erro no cadastro:", err.message);
+    res.status(500).json({ error: "Não foi possível criar a conta. Tente novamente." });
   }
 };
 
-// --- FUNÇÃO DE LOGIN ---
-exports.login = (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ erros: errors.array() });
-  }
-
+// --- LOGIN ---
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email e senha obrigatórios" });
-  }
+  try {
+    const user = await db.getAsync(
+      "SELECT id, name, email, password FROM users WHERE email = ? AND deleted_at IS NULL",
+      [email]
+    );
 
-  const sql = "SELECT * FROM users WHERE email = ?";
+    const senhaValida = await bcrypt.compare(password, user?.password || HASH_FALSO);
 
-  db.get(sql, [email], async (err, user) => {
-    if (err) {
-      return res.status(500).json({ error: "Erro no servidor" });
+    if (!user || !user.password || !senhaValida) {
+      return res.status(401).json({ error: ERRO_CREDENCIAIS });
     }
+
+    res.json({ message: "Login realizado com sucesso", ...gerarSessao(user) });
+  } catch (err) {
+    console.error("Erro no login:", err.message);
+    res.status(500).json({ error: "Erro no servidor. Tente novamente." });
+  }
+};
+
+// --- SOLICITAR RECUPERAÇÃO DE SENHA ---
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  // Mesma resposta exista ou não o e-mail, para não revelar quem tem conta
+  const resposta = { message: "Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha." };
+
+  try {
+    const user = await db.getAsync("SELECT id FROM users WHERE email = ? AND deleted_at IS NULL", [email]);
+    if (!user) return res.json(resposta);
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 3600000); // 1 hora a partir de agora
+
+    await db.runAsync(
+      "UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?",
+      [hashToken(token), expires, user.id]
+    );
+
+    // SIMULAÇÃO DE ENVIO DE E-MAIL: ainda não há serviço de e-mail configurado.
+    // O link só é mostrado fora de produção, e sem o e-mail do usuário no log.
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`\n🔑 Link de recuperação (usuário #${user.id}): ${BASE_URL}/reset-password.html?token=${token}\n`);
+    }
+
+    res.json(resposta);
+  } catch (err) {
+    console.error("Erro na recuperação de senha:", err.message);
+    res.status(500).json({ error: "Erro no servidor. Tente novamente." });
+  }
+};
+
+// --- SALVAR NOVA SENHA ---
+exports.resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const user = await db.getAsync(
+      "SELECT id FROM users WHERE reset_token = ? AND reset_expires > ? AND deleted_at IS NULL",
+      [hashToken(String(token)), new Date()]
+    );
 
     if (!user) {
-      return res.status(401).json({ error: "Usuário não encontrado" });
+      return res.status(400).json({ error: "Link inválido ou expirado. Solicite a recuperação novamente." });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
-
-    if (!validPassword) {
-      return res.status(401).json({ error: "Senha incorreta" });
-    }
-
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-     "supersecreta123",
-      { expiresIn: "1d" }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await db.runAsync(
+      "UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?",
+      [hashedPassword, user.id]
     );
 
-    res.json({
-      message: "Login realizado com sucesso",
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email
-      }
-    });
-  });
-};
-// 1. Rota para pedir a recuperação
-exports.forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    // Aqui você verificaria no banco se o e-mail existe
-    // Geraria um token único e salvaria no banco com expiração
-    res.json({ message: "Se o e-mail existir, um link de recuperação será enviado." });
+    res.json({ message: "Senha alterada com sucesso! Você já pode entrar." });
+  } catch (err) {
+    console.error("Erro ao redefinir senha:", err.message);
+    res.status(500).json({ error: "Erro ao atualizar senha." });
+  }
 };
 
-// 2. Rota para salvar a nova senha
-exports.resetPassword = async (req, res) => {
-    const { token, newPassword } = req.body;
-    // Aqui você validaria o token e faria o UPDATE da senha no banco
-    res.json({ message: "Senha alterada com sucesso!" });
-};
-const crypto = require("crypto"); // Já vem no Node.js
-
-// 1. SOLICITAR RECUPERAÇÃO
-exports.forgotPassword = (req, res) => {
-    const { email } = req.body;
-
-    // Verifica se o usuário existe
-    db.get("SELECT id FROM users WHERE email = ?", [email], (err, user) => {
-        if (err || !user) {
-            // Por segurança, não confirmamos se o e-mail existe ou não
-            return res.json({ message: "Se o e-mail estiver cadastrado, um link foi enviado." });
-        }
-
-        // Cria um token aleatório e uma expiração (1 hora)
-        const token = crypto.randomBytes(20).toString("hex");
-        const expires = new Date(Date.now() + 3600000); // 1 hora a partir de agora
-
-        // Salva o token no banco para este usuário
-        db.run(
-            "UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?",
-            [token, expires, user.id],
-            (updateErr) => {
-                if (updateErr) return res.status(500).json({ error: "Erro no servidor" });
-
-                // SIMULAÇÃO DE ENVIO DE E-MAIL
-                console.log("\n--- RECUPERAÇÃO DE SENHA ---");
-                console.log(`Para o e-mail: ${email}`);
-                console.log(`Link: http://localhost:3000/reset-password.html?token=${token}`);
-                console.log("----------------------------\n");
-
-                res.json({ message: "Link de recuperação enviado (verifique o console do VS Code)." });
-            }
-        );
-    });
-};
-
-// 2. SALVAR NOVA SENHA
-exports.resetPassword = async (req, res) => {
-    const { token, newPassword } = req.body;
-
-    db.get(
-        "SELECT id FROM users WHERE reset_token = ? AND reset_expires > ?",
-        [token, new Date()],
-        async (err, user) => {
-            if (err || !user) {
-                return res.status(400).json({ error: "Token inválido ou expirado." });
-            }
-
-            try {
-                // IMPORTANTE: Criptografa a nova senha antes de salvar
-                // Se o seu login usa hash, o reset TAMBÉM precisa usar
-                const saltRounds = 10;
-                const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-                db.run(
-                    "UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?",
-                    [hashedPassword, user.id],
-                    (updateErr) => {
-                        if (updateErr) return res.status(500).json({ error: "Erro ao atualizar senha." });
-                        res.json({ message: "Senha alterada com sucesso! Agora pode fazer login." });
-                    }
-                );
-            } catch (hashErr) {
-                res.status(500).json({ error: "Erro ao processar senha." });
-            }
-        }
-    );
-};
-
+// --- CRIAR PAGAMENTO ---
+// O cliente envia só o evento e as quantidades; o preço sempre vem do banco.
 exports.criarPagamento = async (req, res) => {
   try {
-    const { evento, items } = req.body;
-    const userId =
-      req.userId ||
-      (req.user ? req.user.id : null) ||
-      (req.usuario ? req.usuario.id : null);
+    const { evento_id, items } = req.body;
+    const userId = req.userId;
 
-    if (!userId) {
-      return res.status(401).json({ error: "Usuário não autenticado" });
+    if (!evento_id || !Array.isArray(items)) {
+      return res.status(400).json({ error: "evento_id e items são obrigatórios" });
     }
 
-    if (!evento || !Array.isArray(items)) {
-      return res.status(400).json({
-        error: "Evento e items são obrigatórios"
+    const evento = await db.getAsync("SELECT * FROM eventos WHERE id = ?", [evento_id]);
+    if (!evento) {
+      return res.status(404).json({ error: "Evento não encontrado" });
+    }
+
+    const itensValidados = [];
+    for (const item of items) {
+      const tipo = TIPOS_INGRESSO[item.tipo];
+      const quantidade = Number(item.quantity);
+
+      if (!tipo) {
+        return res.status(400).json({ error: `Tipo de ingresso inválido: ${item.tipo}` });
+      }
+      if (!Number.isInteger(quantidade) || quantidade < 0 || quantidade > MAX_POR_TIPO) {
+        return res.status(400).json({ error: `Quantidade inválida (máximo ${MAX_POR_TIPO} por tipo)` });
+      }
+      if (quantidade === 0) continue;
+
+      const preco = Number(evento[tipo.coluna]);
+      if (!(preco > 0)) {
+        return res.status(400).json({ error: `Ingresso ${tipo.titulo} indisponível para este evento` });
+      }
+
+      itensValidados.push({
+        id: item.tipo,
+        title: `${tipo.titulo} - ${evento.nome}`,
+        tipo: tipo.titulo,
+        quantity: quantidade,
+        unit_price: preco,
+        currency_id: "BRL"
       });
     }
-
-    const itensValidados = items
-      .filter(item => Number(item.quantity) > 0)
-      .map(item => ({
-        title: item.title,
-        quantity: Number(item.quantity),
-        unit_price: Number(item.unit_price),
-        currency_id: "BRL"
-      }));
 
     if (itensValidados.length === 0) {
       return res.status(400).json({ error: "Nenhum ingresso selecionado" });
     }
 
-    const preference = new Preference(client);
+    // Registra o pedido antes de ir ao Mercado Pago; o id volta no webhook como external_reference
+    const { lastID: pedidoId } = await db.runAsync(
+      `INSERT INTO pagamentos (status, user_id, evento_id, items) VALUES ('pending', ?, ?, ?)`,
+      [userId, evento.id, JSON.stringify(itensValidados)]
+    );
 
     const body = {
-      items: itensValidados,
-      metadata: {
-        user_id: userId,
-        evento,
-        items: itensValidados
-      },
+      items: itensValidados.map(({ id, title, quantity, unit_price, currency_id }) =>
+        ({ id, title, quantity, unit_price, currency_id })),
+      external_reference: String(pedidoId),
       back_urls: {
-        success: "https://goticket-l2y9.onrender.com/pagamento/retorno.html",
-        failure: "https://goticket-l2y9.onrender.com/pagamento/retorno.html",
-        pending: "https://goticket-l2y9.onrender.com/pagamento/retorno.html"
-      },
-      auto_return: "approved",
-      notification_url:
-        "https://goticket-l2y9.onrender.com/webhook/mercadopago"
+        success: `${BASE_URL}/pagamento/retorno.html`,
+        failure: `${BASE_URL}/pagamento/retorno.html`,
+        pending: `${BASE_URL}/pagamento/retorno.html`
+      }
     };
 
-    
+    // O Mercado Pago só aceita retorno automático e webhook em URLs públicas (https)
+    if (BASE_URL.startsWith("https://")) {
+      body.auto_return = "approved";
+      body.notification_url = `${BASE_URL}/webhook/mercadopago`;
+    }
+
     const result = await preference.create({ body });
 
-    const paymentId = result.id;
-
-    db.run(
-      `INSERT INTO pagamentos (payment_id, status)
-       VALUES (?, 'pending')`,
-      [paymentId]
-    );
+    await db.runAsync("UPDATE pagamentos SET preference_id = ? WHERE id = ?", [result.id, pedidoId]);
 
     res.json({ init_point: result.init_point });
 

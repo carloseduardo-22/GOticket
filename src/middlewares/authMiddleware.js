@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const db  = require("../database/db");
+const { JWT_SECRET } = require("../config/env");
 
 const autenticarToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -14,13 +15,20 @@ const autenticarToken = (req, res, next) => {
     return res.status(401).json({ error: "Token mal formatado" });
   }
 
+  let decoded;
   try {
-    const decoded = jwt.verify(token, "supersecreta123");
-    req.userId = decoded.id;
-    next();
+    decoded = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return res.status(401).json({ error: "Token inválido ou expirado" });
   }
+
+  // Garante que a conta ainda existe (uma conta excluída não pode usar o token antigo)
+  db.get("SELECT id FROM users WHERE id = ? AND deleted_at IS NULL", [decoded.id], (err, user) => {
+    if (err) return res.status(500).json({ error: "Erro no servidor" });
+    if (!user) return res.status(401).json({ error: "Sessão inválida. Faça login novamente." });
+    req.userId = user.id;
+    next();
+  });
 };
 
 const autenticarAdmin = (req, res, next) => {

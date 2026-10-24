@@ -10,51 +10,6 @@
 
 <body class="header-fixed">
 
-<!-- ================= MODAL ================= -->
-<div id="registerModal" class="modal">
-  <div class="modal-content">
-
-    <button class="close" aria-label="Fechar modal">&times;</button>
-
-    <!-- LOGIN -->
-    <div id="loginForm">
-      <h2>Entrar</h2>
-
-      <input type="email" id="loginEmail" placeholder="Email">
-      <input type="password" id="loginPassword" placeholder="Senha">
-
-      <button onclick="login()">Entrar</button>
-
-      <p class="link" onclick="mostrarCadastro()">Criar conta</p>
-      <p class="link" onclick="pedirRecuperacao()">Esqueci minha senha</p>
-    </div>
-
-    <!-- CADASTRO -->
-    <div id="registerForm" style="display:none">
-      <h2>Criar conta</h2>
-
-      <input type="text" id="name" placeholder="Nome completo">
-      <input type="email" id="registerEmail" placeholder="Email">
-      <input type="password" id="password" placeholder="Senha">
-      <input type="password" id="registerPassword" placeholder="Confirmar senha">
-
-      <button onclick="cadastrar()">Cadastrar</button>
-
-      <p class="link" onclick="mostrarLogin()">Já tem conta? Entrar</p>
-    </div>
-
-    <!-- SUCESSO -->
-    <div id="registerSuccess" style="display:none">
-      <h2>🎉 Conta criada!</h2>
-      <p>Você já pode acessar sua conta.</p>
-
-      <button onclick="mostrarLogin()">Entrar agora</button>
-      <button onclick="logout()" class="logout-btn">Sair</button>
-    </div>
-
-  </div>
-</div>
-
 <!-- ================= HEADER ================= -->
 <header class="header">
   <div class="header-content">
@@ -63,7 +18,7 @@
     <div class="right-icons">
       <div class="account-wrapper">
         <img id="userIcon" 
-             src="https://img.icons8.com/?size=100&id=98957&format=png&color=ffffff" 
+             src="./icons/user.svg" 
              alt="Entrar" 
              onclick="abrirModal()">
 
@@ -71,12 +26,13 @@
 
         <div id="accountMenu" class="account-menu">
           <a href="meus-ingressos.html">Meus ingressos</a>
+          <a href="minha-conta.html">Minha conta</a>
           <a href="#" onclick="logout()" style="color: #ff4d4d;">Sair</a>
         </div>
       </div>
 
-      <img src="https://img.icons8.com/?size=100&id=59997&format=png&color=ffffff" alt="Ingressos" onclick="irParaMeusIngressos()">
-      <img id="searchIcon" src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff" alt="Buscar" onclick="abrirBusca()">
+      <img src="./icons/ticket.svg" alt="Ingressos" onclick="irParaMeusIngressos()">
+      <img id="searchIcon" src="./icons/search.svg" alt="Buscar" onclick="abrirBusca()">
 
       <div class="menu-toggle" onclick="toggleMenu()">☰</div>
     </div>
@@ -98,7 +54,7 @@
         placeholder="Buscar evento..."
         onkeydown="buscarEvento(event)">
       <button type="button" id="btnBuscar" class="search-btn" onclick="executarBusca()" aria-label="Pesquisar">
-        <img src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff" alt="">
+        <img src="./icons/search.svg" alt="">
       </button>
     </div>
   </div>
@@ -147,7 +103,7 @@
 </div>
 
 <p class="total">
-  Total: R$ <span id="total">0</span>,00
+  Total: R$ <span id="total">0.00</span>
 </p>
 
 
@@ -168,13 +124,13 @@
       <p>Garanta seu ingresso para aquela festa desejada.</p>
       <div class="footer-social">
         <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
-          <img src="https://img.icons8.com/?size=100&id=32323&format=png&color=ffffff" alt="Instagram">
+          <img src="./icons/instagram.svg" alt="Instagram">
         </a>
         <a href="#" target="_blank" rel="noopener" aria-label="Facebook">
-          <img src="https://img.icons8.com/?size=100&id=118497&format=png&color=ffffff" alt="Facebook">
+          <img src="./icons/facebook.svg" alt="Facebook">
         </a>
         <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
-          <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=ffffff" alt="WhatsApp">
+          <img src="./icons/whatsapp.svg" alt="WhatsApp">
         </a>
       </div>
     </div>
@@ -184,8 +140,8 @@
       <ul>
         <li><a href="#">Sobre nós</a></li>
         <li><a href="#">Como funciona</a></li>
-        <li><a href="#">Termos de uso</a></li>
-        <li><a href="#">Política de privacidade</a></li>
+        <li><a href="termos-de-uso.html">Termos de uso</a></li>
+        <li><a href="politica-de-privacidade.html">Política de privacidade</a></li>
       </ul>
     </div>
 
@@ -216,10 +172,6 @@
 </footer>
 
 <script src="script.js"></script>
-<script src="https://sdk.mercadopago.com/js/v2"></script>
-<script>
-  const mp = new MercadoPago('TEST-d5ed5d81-ccc5-49f6-a0c0-d2581cc6e22e');
-</script>
 </body>
 </html>
 

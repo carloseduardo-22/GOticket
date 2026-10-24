@@ -1,59 +1,80 @@
-const { MercadoPagoConfig, Payment } = require('mercadopago');
+const crypto = require("crypto");
 const db = require("../database/db");
+const { payment } = require("../config/mercadopago");
 const { gerarQRCode } = require("../utils/qrcode");
-// Configure o client aqui também
-const client = new MercadoPagoConfig({ 
-    accessToken: 'TEST-1783477078293568-012018-884ac3828e5779c6e0f69ec06de45b42-2487509162' 
-});
 
 exports.mercadoPagoWebhook = async (req, res) => {
   try {
-    const paymentId = req.body?.data?.id || req.body?.id;
+    // Só nos interessam notificações de pagamento
+    const tipo = req.body?.type || req.body?.topic || req.query.type || req.query.topic;
+    if (tipo && tipo !== "payment") return res.sendStatus(200);
 
+    const paymentId = req.body?.data?.id || req.query["data.id"] || req.query.id;
     if (!paymentId) return res.sendStatus(200);
 
     console.log("🔔 Webhook recebido. Payment ID:", paymentId);
 
-    const payment = new Payment(client);
+    // Os dados do pagamento são sempre consultados no Mercado Pago, nunca lidos da notificação
     const result = await payment.get({ id: paymentId });
 
     if (result.status !== "approved") {
       return res.sendStatus(200);
     }
 
-    const { user_id, evento, items } = result.metadata;
+    const pedidoId = Number(result.external_reference);
+    const pedido = pedidoId
+      ? await db.getAsync("SELECT * FROM pagamentos WHERE id = ?", [pedidoId])
+      : null;
 
-    if (!user_id || !evento || !items) {
-      console.error("❌ Metadata incompleto:", result.metadata);
+    if (!pedido) {
+      console.error("❌ Pedido não encontrado para o pagamento", paymentId, result.external_reference);
       return res.sendStatus(200);
     }
 
-    console.log("✅ Pagamento aprovado. Criando ingressos...");
+    // Marca o pedido como aprovado só se ainda não estiver. Se outra notificação
+    // já processou este pedido, changes = 0 e nada é criado de novo.
+    const { changes } = await db.runAsync(
+      "UPDATE pagamentos SET status = 'approved', payment_id = ? WHERE id = ? AND status != 'approved'",
+      [String(paymentId), pedido.id]
+    );
 
-    for (const item of items) {
-      for (let i = 0; i < item.quantity; i++) {
-        const qrCode = await gerarQRCode(paymentId + "-" + Date.now());
-
-        db.run(
-          `INSERT INTO tickets
-           (user_id, event, type, qr_code, status, payment_id)
-           VALUES (?, ?, ?, ?, 'approved', ?)`,
-          [
-            user_id,
-            evento,
-            item.title, // Inteira / Meia / Camarote
-            qrCode,
-            paymentId
-          ]
-        );
-      }
+    if (changes === 0) {
+      console.log("ℹ️  Pagamento já processado:", paymentId);
+      return res.sendStatus(200);
     }
 
-    // opcional: atualizar tabela pagamentos
-    db.run(
-      `UPDATE pagamentos SET status = 'approved' WHERE payment_id = ?`,
-      [paymentId]
-    );
+    const evento = await db.getAsync("SELECT nome FROM eventos WHERE id = ?", [pedido.evento_id]);
+    const items = JSON.parse(pedido.items || "[]");
+
+    try {
+      for (const item of items) {
+        for (let i = 0; i < item.quantity; i++) {
+          const token = crypto.randomUUID();
+          const qrCode = await gerarQRCode(token);
+
+          await db.runAsync(
+            `INSERT INTO tickets
+             (user_id, evento_id, event, type, quantity, total, qr_code, qr_token, status, payment_id)
+             VALUES (?, ?, ?, ?, 1, ?, ?, ?, 'approved', ?)`,
+            [
+              pedido.user_id,
+              pedido.evento_id,
+              evento ? evento.nome : "Evento",
+              item.tipo, // Inteira / Meia-entrada / Camarote
+              item.unit_price,
+              qrCode,
+              token,
+              String(paymentId)
+            ]
+          );
+        }
+      }
+    } catch (err) {
+      // Desfaz para que a próxima notificação do Mercado Pago tente de novo
+      await db.runAsync("DELETE FROM tickets WHERE payment_id = ?", [String(paymentId)]);
+      await db.runAsync("UPDATE pagamentos SET status = 'pending' WHERE id = ?", [pedido.id]);
+      throw err;
+    }
 
     console.log("🎟️ Ingressos criados com sucesso!");
     res.sendStatus(200);
@@ -63,6 +84,3 @@ exports.mercadoPagoWebhook = async (req, res) => {
     res.sendStatus(500);
   }
 };
-
-
-

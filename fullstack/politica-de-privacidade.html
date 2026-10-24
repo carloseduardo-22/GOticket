@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Política de Privacidade | GoTicket</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="header-fixed">
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <div class="header-content">
+    <h1 class="logo">GoTicket</h1>
+
+    <div class="right-icons">
+      <div class="account-wrapper">
+        <img id="userIcon" 
+             src="./icons/user.svg" 
+             alt="Perfil" 
+             onclick="abrirModal()">
+
+        <span id="userGreeting" class="user-name" style="display: none;">Minha conta</span>
+
+        <div id="accountMenu" class="account-menu">
+          <a href="meus-ingressos.html">Meus ingressos</a>
+          <a href="minha-conta.html">Minha conta</a>
+          <a href="#" onclick="logout()" style="color: #ff4d4d;">Sair</a>
+        </div>
+      </div>
+
+      <img src="./icons/ticket.svg" alt="Meus ingressos" onclick="irParaMeusIngressos()">
+      <img src="./icons/search.svg" alt="Buscar" onclick="abrirBusca()">
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    </div>
+  </div>
+
+  <nav class="navbar" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="index.html">Ingressos</a>
+        <a href="meus-ingressos.html">Meus ingressos</a>
+  </nav>
+
+  <!-- BUSCA -->
+  <div id="searchBox" class="search-box">
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Buscar evento..."
+        onkeydown="buscarEvento(event)">
+      <button type="button" id="btnBuscar" class="search-btn" onclick="executarBusca()" aria-label="Pesquisar">
+        <img src="./icons/search.svg" alt="">
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="pagina">
+  <article class="texto-legal">
+    <h1>Política de Privacidade</h1>
+    <p class="atualizado">Versão 2026-10-24 · Última atualização: 24/10/2026</p>
+
+    <p>Esta política explica quais dados pessoais o GoTicket coleta, para que usa, com quem compartilha e
+    como você pode exercer seus direitos, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD).</p>
+
+    <h2>1. Quem é o controlador</h2>
+    <p>O controlador dos dados é <span class="pendente">[RAZÃO SOCIAL], CNPJ [00.000.000/0000-00]</span>,
+    com sede em Goiânia/GO, responsável pela plataforma GoTicket.</p>
+    <p>Encarregado pelo tratamento de dados (DPO): <span class="pendente">[NOME DO ENCARREGADO]</span>,
+    e-mail <span class="pendente">privacidade@goticket.com</span>.</p>
+
+    <h2>2. Quais dados coletamos e por quê</h2>
+    <table>
+      <thead><tr><th>Dado</th><th>Finalidade</th><th>Base legal (LGPD)</th></tr></thead>
+      <tbody>
+        <tr><td>Nome, e-mail e senha (guardada apenas de forma criptografada)</td>
+            <td>Criar e manter sua conta, permitir o login e a recuperação de senha</td>
+            <td>Execução de contrato (art. 7º, V)</td></tr>
+        <tr><td>Ingressos comprados: evento, tipo, valor, código do pagamento e QR Code</td>
+            <td>Emitir, exibir e validar seus ingressos na entrada do evento</td>
+            <td>Execução de contrato (art. 7º, V)</td></tr>
+        <tr><td>Registros de pedidos e pagamentos</td>
+            <td>Cumprir obrigações fiscais e contábeis</td>
+            <td>Cumprimento de obrigação legal (art. 7º, II)</td></tr>
+        <tr><td>Endereço IP (mantido apenas em memória, por até 1 hora)</td>
+            <td>Bloquear tentativas repetidas de login e proteger contas contra fraude</td>
+            <td>Legítimo interesse (art. 7º, IX)</td></tr>
+        <tr><td>Data e versão do aceite destes termos</td>
+            <td>Comprovar o aceite da Política de Privacidade e dos Termos de Uso</td>
+            <td>Cumprimento de obrigação legal (art. 7º, II, e art. 8º, §2º)</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Não coletamos</strong> CPF, endereço, telefone nem dados de cartão. O pagamento é feito
+    diretamente no ambiente do Mercado Pago, que trata esses dados como controlador independente.</p>
+
+    <h2>3. Com quem compartilhamos</h2>
+    <ul>
+      <li><strong>Mercado Pago</strong>: processamento do pagamento. Enviamos apenas os itens do pedido e
+      o valor. Consulte a política de privacidade do Mercado Pago.</li>
+      <li><strong>Render</strong>: empresa que hospeda nossos servidores. Os dados podem ser armazenados em
+      servidores fora do Brasil, com as garantias do art. 33 da LGPD.</li>
+      <li><strong>Autoridades</strong>: somente quando houver obrigação legal ou ordem judicial.</li>
+    </ul>
+    <p>Não vendemos seus dados e não os usamos para publicidade.</p>
+
+    <h2>4. Cookies e armazenamento no navegador</h2>
+    <p>Não usamos cookies de rastreamento, publicidade ou análise. Guardamos no armazenamento local do seu
+    navegador apenas o necessário para manter você conectado (um código de sessão e seu nome e e-mail
+    para exibição). Esses dados são apagados ao clicar em <em>Sair</em>.</p>
+
+    <h2>5. Por quanto tempo guardamos</h2>
+    <ul>
+      <li>Dados da conta: enquanto a conta estiver ativa. Ao excluí-la, nome, e-mail e senha são apagados na hora.</li>
+      <li>Registros de vendas (sem identificação pessoal após a exclusão da conta): pelo prazo exigido pela
+      legislação fiscal, em geral 5 anos.</li>
+      <li>Link de recuperação de senha: expira em 1 hora.</li>
+      <li>Endereço IP para proteção contra ataques: até 1 hora, apenas em memória.</li>
+    </ul>
+
+    <h2>6. Seus direitos</h2>
+    <p>Pelo art. 18 da LGPD, você pode, a qualquer momento:</p>
+    <ul>
+      <li>confirmar se tratamos seus dados e <strong>acessá-los</strong>;</li>
+      <li><strong>corrigir</strong> dados incompletos ou desatualizados;</li>
+      <li>pedir a <strong>portabilidade</strong> (receber seus dados em formato estruturado);</li>
+      <li>pedir a <strong>eliminação</strong> dos dados e a exclusão da conta;</li>
+      <li>saber com quem compartilhamos seus dados;</li>
+      <li>revogar o consentimento, quando ele for a base legal;</li>
+      <li>apresentar reclamação à Autoridade Nacional de Proteção de Dados (ANPD).</li>
+    </ul>
+    <p>Você exerce a maioria desses direitos sozinho na página <a href="minha-conta.html">Minha conta</a>
+    (ver, corrigir, baixar e excluir seus dados). Para os demais pedidos, escreva para o encarregado no
+    e-mail indicado acima. Respondemos em até 15 dias.</p>
+
+    <h2>7. Segurança</h2>
+    <p>Senhas são armazenadas com criptografia (bcrypt) e nunca ficam visíveis, nem para nossa equipe.
+    Links de recuperação de senha são guardados de forma irreversível e expiram em 1 hora. O acesso é
+    protegido por limite de tentativas. Em caso de incidente de segurança que possa causar risco ou dano
+    relevante, você e a ANPD serão comunicados, conforme o art. 48 da LGPD.</p>
+
+    <h2>8. Menores de idade</h2>
+    <p>A criação de conta e a compra de ingressos são destinadas a maiores de 18 anos. Menores devem
+    comprar por meio de seus pais ou responsáveis legais.</p>
+
+    <h2>9. Alterações desta política</h2>
+    <p>Se esta política mudar de forma relevante, avisaremos no site e, quando necessário, pediremos um novo aceite.</p>
+  </article>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="footer-content">
+
+    <div class="footer-col footer-brand">
+      <h3 class="footer-logo">GoTicket</h3>
+      <p>Garanta seu ingresso para aquela festa desejada.</p>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+          <img src="./icons/instagram.svg" alt="Instagram">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Facebook">
+          <img src="./icons/facebook.svg" alt="Facebook">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <img src="./icons/whatsapp.svg" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Institucional</h4>
+      <ul>
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Como funciona</a></li>
+        <li><a href="termos-de-uso.html">Termos de uso</a></li>
+        <li><a href="politica-de-privacidade.html">Política de privacidade</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Ajuda</h4>
+      <ul>
+        <li><a href="#">Central de ajuda</a></li>
+        <li><a href="#">Fale conosco</a></li>
+        <li><a href="meus-ingressos.html">Meus ingressos</a></li>
+        <li><a href="#">Trocas e reembolsos</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contato</h4>
+      <ul class="footer-contact">
+        <li>contato@goticket.com</li>
+        <li>(00) 00000-0000</li>
+        <li>Goiânia, GO - Brasil</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <span id="footerYear"></span> GoTicket. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+

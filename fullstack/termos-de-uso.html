@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Termos de Uso | GoTicket</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="header-fixed">
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <div class="header-content">
+    <h1 class="logo">GoTicket</h1>
+
+    <div class="right-icons">
+      <div class="account-wrapper">
+        <img id="userIcon" 
+             src="./icons/user.svg" 
+             alt="Perfil" 
+             onclick="abrirModal()">
+
+        <span id="userGreeting" class="user-name" style="display: none;">Minha conta</span>
+
+        <div id="accountMenu" class="account-menu">
+          <a href="meus-ingressos.html">Meus ingressos</a>
+          <a href="minha-conta.html">Minha conta</a>
+          <a href="#" onclick="logout()" style="color: #ff4d4d;">Sair</a>
+        </div>
+      </div>
+
+      <img src="./icons/ticket.svg" alt="Meus ingressos" onclick="irParaMeusIngressos()">
+      <img src="./icons/search.svg" alt="Buscar" onclick="abrirBusca()">
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    </div>
+  </div>
+
+  <nav class="navbar" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="index.html">Ingressos</a>
+        <a href="meus-ingressos.html">Meus ingressos</a>
+  </nav>
+
+  <!-- BUSCA -->
+  <div id="searchBox" class="search-box">
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Buscar evento..."
+        onkeydown="buscarEvento(event)">
+      <button type="button" id="btnBuscar" class="search-btn" onclick="executarBusca()" aria-label="Pesquisar">
+        <img src="./icons/search.svg" alt="">
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="pagina">
+  <article class="texto-legal">
+    <h1>Termos de Uso</h1>
+    <p class="atualizado">Versão 2026-10-24 · Última atualização: 24/10/2026</p>
+
+    <p>Ao criar uma conta ou comprar ingressos no GoTicket, operado por
+    <span class="pendente">[RAZÃO SOCIAL], CNPJ [00.000.000/0000-00]</span>, você concorda com estes termos.</p>
+
+    <h2>1. Conta</h2>
+    <ul>
+      <li>Você deve ter 18 anos ou mais e informar dados verdadeiros.</li>
+      <li>Você é responsável por manter sua senha em sigilo. Avise-nos se suspeitar de uso indevido.</li>
+      <li>Você pode excluir sua conta a qualquer momento em <a href="minha-conta.html">Minha conta</a>.</li>
+    </ul>
+
+    <h2>2. Compra de ingressos</h2>
+    <ul>
+      <li>Os preços exibidos na página do evento são os cobrados. O pagamento é processado pelo Mercado Pago.</li>
+      <li>O ingresso é emitido após a confirmação do pagamento e fica disponível em <a href="meus-ingressos.html">Meus ingressos</a>.</li>
+      <li>Cada ingresso tem um QR Code único, válido para <strong>uma única entrada</strong>. Não compartilhe o QR Code:
+      a primeira leitura na portaria invalida as demais.</li>
+      <li>A meia-entrada exige a apresentação do documento que comprove o direito, conforme a Lei nº 12.933/2013.</li>
+    </ul>
+
+    <h2>3. Cancelamento e reembolso</h2>
+    <p>Compras feitas pela internet podem ser canceladas em até 7 dias após a compra, desde que antes da
+    realização do evento (art. 49 do Código de Defesa do Consumidor). Em caso de cancelamento ou adiamento
+    do evento pelo organizador, o valor será reembolsado. Para solicitar, entre em contato pelo e-mail
+    <span class="pendente">contato@goticket.com</span>.</p>
+
+    <h2>4. Uso proibido</h2>
+    <p>É proibido revender ingressos acima do valor de face, tentar burlar o sistema de pagamento ou de
+    validação, ou acessar contas de outras pessoas.</p>
+
+    <h2>5. Privacidade</h2>
+    <p>O tratamento dos seus dados pessoais está descrito na <a href="politica-de-privacidade.html">Política de Privacidade</a>.</p>
+
+    <h2>6. Foro</h2>
+    <p>Fica eleito o foro do domicílio do consumidor para resolver qualquer questão relacionada a estes termos.</p>
+  </article>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="footer-content">
+
+    <div class="footer-col footer-brand">
+      <h3 class="footer-logo">GoTicket</h3>
+      <p>Garanta seu ingresso para aquela festa desejada.</p>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+          <img src="./icons/instagram.svg" alt="Instagram">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Facebook">
+          <img src="./icons/facebook.svg" alt="Facebook">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <img src="./icons/whatsapp.svg" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Institucional</h4>
+      <ul>
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Como funciona</a></li>
+        <li><a href="termos-de-uso.html">Termos de uso</a></li>
+        <li><a href="politica-de-privacidade.html">Política de privacidade</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Ajuda</h4>
+      <ul>
+        <li><a href="#">Central de ajuda</a></li>
+        <li><a href="#">Fale conosco</a></li>
+        <li><a href="meus-ingressos.html">Meus ingressos</a></li>
+        <li><a href="#">Trocas e reembolsos</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contato</h4>
+      <ul class="footer-contact">
+        <li>contato@goticket.com</li>
+        <li>(00) 00000-0000</li>
+        <li>Goiânia, GO - Brasil</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <span id="footerYear"></span> GoTicket. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+

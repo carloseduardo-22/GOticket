@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Minha conta | GoTicket</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="header-fixed">
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <div class="header-content">
+    <h1 class="logo">GoTicket</h1>
+
+    <div class="right-icons">
+      <div class="account-wrapper">
+        <img id="userIcon" 
+             src="./icons/user.svg" 
+             alt="Perfil" 
+             onclick="abrirModal()">
+
+        <span id="userGreeting" class="user-name" style="display: none;">Minha conta</span>
+
+        <div id="accountMenu" class="account-menu">
+          <a href="meus-ingressos.html">Meus ingressos</a>
+          <a href="minha-conta.html">Minha conta</a>
+          <a href="#" onclick="logout()" style="color: #ff4d4d;">Sair</a>
+        </div>
+      </div>
+
+      <img src="./icons/ticket.svg" alt="Meus ingressos" onclick="irParaMeusIngressos()">
+      <img src="./icons/search.svg" alt="Buscar" onclick="abrirBusca()">
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    </div>
+  </div>
+
+  <nav class="navbar" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="index.html">Ingressos</a>
+        <a href="meus-ingressos.html">Meus ingressos</a>
+  </nav>
+
+  <!-- BUSCA -->
+  <div id="searchBox" class="search-box">
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Buscar evento..."
+        onkeydown="buscarEvento(event)">
+      <button type="button" id="btnBuscar" class="search-btn" onclick="executarBusca()" aria-label="Pesquisar">
+        <img src="./icons/search.svg" alt="">
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="pagina">
+  <h2 class="section-title">Minha conta</h2>
+  <div id="conta"><p class="lista-vazia">Carregando...</p></div>
+  <p style="text-align:center;font-size:14px;color:#6b7280;">Saiba como tratamos seus dados na <a href="politica-de-privacidade.html">Política de Privacidade</a>.</p>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="footer-content">
+
+    <div class="footer-col footer-brand">
+      <h3 class="footer-logo">GoTicket</h3>
+      <p>Garanta seu ingresso para aquela festa desejada.</p>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+          <img src="./icons/instagram.svg" alt="Instagram">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Facebook">
+          <img src="./icons/facebook.svg" alt="Facebook">
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <img src="./icons/whatsapp.svg" alt="WhatsApp">
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Institucional</h4>
+      <ul>
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Como funciona</a></li>
+        <li><a href="termos-de-uso.html">Termos de uso</a></li>
+        <li><a href="politica-de-privacidade.html">Política de privacidade</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Ajuda</h4>
+      <ul>
+        <li><a href="#">Central de ajuda</a></li>
+        <li><a href="#">Fale conosco</a></li>
+        <li><a href="meus-ingressos.html">Meus ingressos</a></li>
+        <li><a href="#">Trocas e reembolsos</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contato</h4>
+      <ul class="footer-contact">
+        <li>contato@goticket.com</li>
+        <li>(00) 00000-0000</li>
+        <li>Goiânia, GO - Brasil</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <span id="footerYear"></span> GoTicket. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script src="minha-conta.js"></script>
+</body>
+</html>
+
